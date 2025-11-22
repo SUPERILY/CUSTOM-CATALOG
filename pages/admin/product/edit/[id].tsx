@@ -5,7 +5,7 @@ import { Product, Category, StockStatus, StockStatusModel } from '../../../../ty
 import { DB } from '../../../../services/db';
 import { showToast } from '../../../../components/ToastProvider';
 import { Save, ArrowLeft, Loader2, Plus, X, Upload, Image as ImageIcon } from 'lucide-react';
-import { AdminLayout } from '../../AdminLayout';
+import { AdminLayout } from '../../../../components/admin/AdminLayout';
 import { NextPageWithLayout } from '../../../_app';
 
 interface ProductEditorProps {
