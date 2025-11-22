@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AdminLayout } from '../AdminLayout';
+import { AdminLayout } from '../../../components/admin/AdminLayout';
 import { NextPageWithLayout } from '../../_app';
 import { Breadcrumbs } from '../../../components/admin/Breadcrumbs';
 import { Loader2, Save, Upload, X, Image as ImageIcon } from 'lucide-react';
