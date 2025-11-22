@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Product, StockStatus } from '../../types';
 import { DB } from '../../services/db';
 import { StockBadge } from '../../components/StockBadge';
@@ -24,10 +24,20 @@ export const ProductManager: React.FC = () => {
   const handleStockUpdate = async (productId: string, newStatus: StockStatus) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      const updated = { ...product, stockStatus: newStatus };
-      await DB.saveProduct(updated);
+      await DB.saveProduct({
+        id: product.id,
+        name: product.name,
+        sku: product.sku,
+        price: product.price,
+        hidePrice: product.hidePrice,
+        description: product.description,
+        stockStatus: newStatus,
+        categoryId: product.categoryId,
+        features: product.features.map(f => f.text),
+        images: product.images.map(i => i.url)
+      });
       // Optimistic update locally
-      setProducts(prev => prev.map(p => p.id === productId ? updated : p));
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, stockStatus: newStatus } : p));
     }
   };
 
@@ -48,7 +58,7 @@ export const ProductManager: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
         <Link
-          to="/admin/products/new"
+          href="/admin/products/new"
           className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" /> Add New Product
@@ -100,14 +110,14 @@ export const ProductManager: React.FC = () => {
                   <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={product.images[0]} alt="" className="w-10 h-10 rounded-md object-cover bg-gray-200" />
+                        <img src={product.images[0]?.url} alt="" className="w-10 h-10 rounded-md object-cover bg-gray-200" />
                         <div>
                           <p className="font-medium text-gray-900">{product.name}</p>
                           <p className="text-xs text-gray-500">SKU: {product.sku}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{product.category}</td>
+                    <td className="px-6 py-4 text-gray-600">{product.category.name}</td>
                     <td className="px-6 py-4 font-medium text-gray-900">
                       {product.hidePrice ? (
                         <div className="flex items-center gap-1.5 text-gray-500" title="Price hidden on catalog">
@@ -137,7 +147,7 @@ export const ProductManager: React.FC = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          to={`/admin/products/edit/${product.id}`}
+                          href={`/admin/products/edit/${product.id}`}
                           className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                           title="Edit"
                         >

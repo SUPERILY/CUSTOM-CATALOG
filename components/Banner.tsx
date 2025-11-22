@@ -8,7 +8,7 @@ interface BannerProps {
 }
 
 export const Banner: React.FC<BannerProps> = ({ banner }) => {
-    if (!banner || !banner.isVisible) return null;
+    if (!banner || !banner.isActive) return null;
 
     return (
         <div className="relative rounded-2xl overflow-hidden bg-indigo-900 text-white shadow-lg">

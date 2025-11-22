@@ -7,7 +7,7 @@ export const CategoryManager: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // State for adding new category
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -38,7 +38,10 @@ export const CategoryManager: React.FC = () => {
     setIsAdding(true);
     const newCategory: Category = {
       id: crypto.randomUUID(),
-      name: newCategoryName.trim()
+      name: newCategoryName.trim(),
+      displayOrder: categories.length,
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     await DB.saveCategory(newCategory);
     setCategories([...categories, newCategory]);
@@ -59,22 +62,33 @@ export const CategoryManager: React.FC = () => {
   const handleUpdate = async (id: string) => {
     const oldCategory = categories.find(c => c.id === id);
     if (!oldCategory || !editName.trim()) return;
-    
+
     // Optimistic UI update
     const updatedCategories = categories.map(c => c.id === id ? { ...c, name: editName.trim() } : c);
     setCategories(updatedCategories);
     setEditingId(null);
 
     // Persist Category Change
-    await DB.saveCategory({ id, name: editName.trim() });
+    await DB.saveCategory({ id, name: editName.trim(), displayOrder: oldCategory.displayOrder });
 
     // CASADING UPDATE: Update all products that used the old category name
     if (oldCategory.name !== editName.trim()) {
-      const productsToUpdate = products.filter(p => p.category === oldCategory.name);
-      
+      const productsToUpdate = products.filter(p => p.category.name === oldCategory.name);
+
       if (productsToUpdate.length > 0) {
         await Promise.all(productsToUpdate.map(p => {
-          return DB.saveProduct({ ...p, category: editName.trim() });
+          return DB.saveProduct({
+            id: p.id,
+            name: p.name,
+            sku: p.sku,
+            price: p.price,
+            hidePrice: p.hidePrice,
+            description: p.description,
+            stockStatus: p.stockStatus,
+            categoryId: p.categoryId,
+            features: p.features.map(f => f.text),
+            images: p.images.map(i => i.url)
+          });
         }));
         // Refresh products in background to keep local state compliant
         const updatedProducts = await DB.getProducts();
@@ -84,9 +98,9 @@ export const CategoryManager: React.FC = () => {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    const productCount = products.filter(p => p.category === name).length;
-    
-    const confirmMessage = productCount > 0 
+    const productCount = products.filter(p => p.category.name === name).length;
+
+    const confirmMessage = productCount > 0
       ? `Warning: ${productCount} product(s) are in this category. Deleting it will leave them uncategorized (or keep the old tag). Continue?`
       : 'Are you sure you want to delete this category?';
 
@@ -133,9 +147,9 @@ export const CategoryManager: React.FC = () => {
       {/* Category List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-4 bg-gray-50 border-b border-gray-100">
-           <h3 className="font-semibold text-gray-700">Existing Categories ({categories.length})</h3>
+          <h3 className="font-semibold text-gray-700">Existing Categories ({categories.length})</h3>
         </div>
-        
+
         {loading ? (
           <div className="p-8 flex justify-center">
             <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
@@ -147,13 +161,13 @@ export const CategoryManager: React.FC = () => {
         ) : (
           <ul className="divide-y divide-gray-100">
             {categories.map(category => {
-              const productCount = products.filter(p => p.category === category.name).length;
+              const productCount = products.filter(p => p.category.name === category.name).length;
               const isEditing = editingId === category.id;
 
               return (
                 <li key={category.id} className="p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center justify-between gap-4">
-                    
+
                     {isEditing ? (
                       <div className="flex-grow flex items-center gap-3">
                         <input

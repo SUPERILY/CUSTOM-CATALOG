@@ -28,16 +28,16 @@ async function main() {
     // Create a default banner if it doesn't exist
     console.log('🎨 Creating default banner...');
     await prisma.banner.upsert({
-        where: { id: 1 },
+        where: { id: 'default-banner' },
         update: {},
         create: {
-            id: 1,
+            id: 'default-banner',
             title: 'Bienvenue chez El Jarjini Complexe',
             subtitle: 'Solutions d\'hébergement professionnelles',
             imageUrl: '/banner.jpg',
             linkText: 'Découvrir nos offres',
             linkUrl: '/products',
-            isVisible: true,
+            isActive: true,
         },
     });
     console.log('  ✓ Created default banner');
