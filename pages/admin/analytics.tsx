@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactElement } from 'react';
-import { AdminLayout } from './AdminLayout';
+import { AdminLayout } from '../../components/admin/AdminLayout';
 import { NextPageWithLayout } from '../_app';
 import { DollarSign, Package, List, TrendingUp, TrendingDown, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Product, StockStatus } from '../../types';

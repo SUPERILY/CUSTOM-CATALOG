@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { AdminLayout } from './AdminLayout';
+import { AdminLayout } from '../../components/admin/AdminLayout';
 import { NextPageWithLayout } from '../_app';
 import { Banner } from '../../types';
 import { Loader2, Plus, Edit2, Trash2, X, Save, Image as ImageIcon, GripVertical, Eye, EyeOff, Upload, Smartphone, Monitor } from 'lucide-react';

@@ -2,7 +2,7 @@ import React, { useEffect, useState, ReactElement } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, StockStatus } from '../../types';
-import { AdminLayout } from './AdminLayout';
+import { AdminLayout } from '../../components/admin/AdminLayout';
 import { Edit2, Trash2, Plus, Loader2, Search, EyeOff, ImageIcon, Copy, Download, CheckSquare, Square } from 'lucide-react';
 import { NextPageWithLayout } from '../_app';
 import { showToast } from '../../components/ToastProvider';

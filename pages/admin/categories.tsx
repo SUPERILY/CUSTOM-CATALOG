@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ReactElement } from 'react';
 import { Category, Product } from '../../types';
-import { AdminLayout } from './AdminLayout';
+import { AdminLayout } from '../../components/admin/AdminLayout';
 import { Plus, Edit2, Trash2, Save, X, Loader2, List } from 'lucide-react';
 import { NextPageWithLayout } from '../_app';
 

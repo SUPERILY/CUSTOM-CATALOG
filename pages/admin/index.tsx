@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { AdminLayout } from './AdminLayout';
+import { AdminLayout } from '../../components/admin/AdminLayout';
 import { NextPageWithLayout } from '../_app';
 import { DollarSign, Package, List, Hash, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { QuickActions } from '../../components/admin/QuickActions';
